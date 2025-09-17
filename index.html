@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <title>We'll be back soon</title>
+  <!-- Optional: auto-refresh every 60s -->
+  <!-- <meta http-equiv="refresh" content="60"> -->
+  <style>
+    :root{
+      --bg:#0b1220;      /* dark gradient start */
+      --bg2:#121e32;     /* dark gradient end */
+      --card:#0f172a;    /* card bg */
+      --text:#e5e7eb;    /* primary text */
+      --muted:#94a3b8;   /* secondary text */
+      --accent:#0ea5e9;  /* buttons/links */
+      --ring: rgba(14,165,233,.35);
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f1f5f9;    /* light gradient start */
+        --bg2:#e2e8f0;   /* light gradient end */
+        --card:#ffffff;  /* card bg */
+        --text:#0f172a;  /* primary text */
+        --muted:#475569; /* secondary text */
+        --accent:#0284c7;/* buttons/links */
+        --ring: rgba(2,132,199,.25);
+      }
+    }
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background: radial-gradient(1000px 800px at 20% 10%, var(--bg2), var(--bg));
+      display:grid; place-items:center; padding:24px;
+    }
+    .card{
+      width:min(680px, 92vw);
+      background:var(--card);
+      border-radius:24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.04);
+      padding:32px; text-align:center; position:relative; overflow:hidden;
+      border:1px solid rgba(148,163,184,.15);
+    }
+    .badge{display:inline-flex; gap:8px; align-items:center; font-weight:600; letter-spacing:.2px; color:var(--accent);
+      background: rgba(14,165,233,.12); border:1px solid var(--ring); padding:6px 10px; border-radius:999px;}
+    h1{font-size:clamp(26px, 4vw, 40px); margin:14px 0 10px;}
+    p.lead{color:var(--muted); margin:0 auto 18px; max-width:52ch; line-height:1.6}
+    .actions{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:18px}
+    .btn{appearance:none; border:1px solid transparent; border-radius:12px; padding:12px 16px; font-weight:600; cursor:pointer;
+      background:var(--accent); color:white; box-shadow: 0 6px 16px var(--ring);} 
+    .btn.secondary{ background:transparent; color:var(--text); border-color: rgba(148,163,184,.35);} 
+    .btn:focus-visible{ outline: 3px solid var(--ring); outline-offset: 2px;}
+    .meta{margin-top:22px; color:var(--muted); font-size:14px}
+    .countdown{font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; display:inline-block; min-width:9ch}
+    footer{margin-top:22px; font-size:13px; color:var(--muted)}
+    svg{flex:0 0 auto}
+    .logo{display:flex; align-items:center; justify-content:center; gap:10px}
+    .blur{
+      position:absolute; inset:auto -120px -120px auto; width:260px; height:260px; border-radius:50%;
+      background: radial-gradient(closest-side, var(--accent), transparent 70%);
+      opacity:.25; filter: blur(40px); pointer-events:none;
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="title">
+    <div class="blur" aria-hidden="true"></div>
+
+    <div class="logo" aria-label="Logo">
+      <!-- Inline SVG wrench/gear icon -->
+      <svg width="38" height="38" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M22 19.5l-6.6-6.6a7 7 0 11-3.9-3.9L18 15.6V18l4 4v-2.5zM7 10a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="1.2"/>
+      </svg>
+      <span class="badge">Scheduled Maintenance</span>
+    </div>
+
+    <h1 id="title">We’re doing some work under the hood</h1>
+    <p class="lead">Our site is temporarily unavailable while we perform routine upgrades to keep things fast and secure. Thanks for your patience!</p>
+
+    <div class="actions">
+      <!--button class="btn" id="retryBtn" type="button">Try again</button-->
+      <a class="btn secondary" href="mailto:techsupport@technotackle.com">Contact support</a>
+      <!--a class="btn secondary" href="/status" aria-label="Service status page">Status page</a-->
+    </div>
+
+    <div class="meta">
+      <span>Estimated time remaining: <span class="countdown" id="countdown">--:--:--</span></span>
+    </div>
+
+    <footer>
+      If you are the site owner, return a <code>503 Service Unavailable</code> with a <code>Retry-After</code> header.
+    </footer>
+  </main>
+
+  <script>
+    // Optional: simple countdown (set target minutes)
+    const mins = 30; // <-- change ETA here
+    const end = Date.now() + mins * 60 * 1000;
+    const el = document.getElementById('countdown');
+    const fmt = (n) => String(n).padStart(2,'0');
+    const tick = () => {
+      const d = Math.max(0, end - Date.now());
+      const h = Math.floor(d / 3_600_000);
+      const m = Math.floor((d % 3_600_000) / 60_000);
+      const s = Math.floor((d % 60_000) / 1_000);
+      el.textContent = `${fmt(h)}:${fmt(m)}:${fmt(s)}`;
+      if (d === 0) clearInterval(t);
+    };
+    const t = setInterval(tick, 1000); tick();
+
+    // Retry button simply reloads the page
+    document.getElementById('retryBtn').addEventListener('click', () => location.reload());
+  </script>
+</body>
+</html>
